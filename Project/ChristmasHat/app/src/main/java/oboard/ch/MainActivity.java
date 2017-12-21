@@ -1,6 +1,7 @@
 package oboard.ch;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,7 +20,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import android.view.MotionEvent;
+import android.widget.Spinner;
+import android.widget.SimpleAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -35,8 +40,9 @@ public class MainActivity extends Activity {
 		s = new MultiTouchView(this, R.drawable.s1);
 		s.setVisibility(View.GONE);
 		iv = (ImageView)findViewById(R.id.main_image);
-		r = (FrameLayout)iv.getParent();
+		r = (FrameLayout)findViewById(R.id.main_frame);
 		t = (LinearLayout)findViewById(R.id.main_tool);
+		
 		r.addView(s);
     }
 
@@ -56,8 +62,14 @@ public class MainActivity extends Activity {
 		//分享图
 		if (v.getId() == R.id.main_share)
 			shareMsg(getTitle().toString(), "head", u);
+		else
+			new AlertDialog.Builder(this).setMessage("已保存到 " + u.toString()).setPositiveButton("知道了", null).show();
 	}
 
+	public void onAbout(View v) {
+		Toast.makeText(this, "作者：一块小板子   QQ：2232442466", Toast.LENGTH_LONG).show();
+	}
+		
 	public void shareMsg(String msgTitle, String msgText, Uri imguri) {
 		Intent intent = new Intent(Intent.ACTION_SEND); //设置分享行为
 		intent.setType("image/*");
@@ -70,7 +82,7 @@ public class MainActivity extends Activity {
 	}
 
 	public Bitmap getWebDrawing() {
-		
+
 		//获得图像在ImageView的位置
 		//!!!!!!
 
@@ -106,7 +118,7 @@ public class MainActivity extends Activity {
 				//接收图库的图
                 try {
 					iv.setImageBitmap(BitmapFactory.decodeStream(cr.openInputStream(uri)));
-					
+
 					//开始编辑！（圣诞帽出来。。）
 					t.setVisibility(View.VISIBLE);
 					s.setVisibility(View.VISIBLE);

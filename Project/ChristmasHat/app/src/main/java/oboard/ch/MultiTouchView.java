@@ -10,49 +10,43 @@ package oboard.ch;
  * 由于没有边界判断，程序可能会出现崩溃
  */
  
-import android.annotation.SuppressLint;  
-import android.app.Activity;  
-import android.graphics.Bitmap;  
-import android.graphics.Bitmap.Config;  
-import android.graphics.BitmapFactory;  
-import android.graphics.Canvas;  
-import android.graphics.Matrix;  
-import android.graphics.Paint;  
-import android.graphics.PaintFlagsDrawFilter;  
-import android.graphics.PointF;  
-import android.util.DisplayMetrics;  
-import android.util.FloatMath;  
-import android.view.MotionEvent;  
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.PointF;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.widget.ImageView;  
 
 public class MultiTouchView extends ImageView {
-		//本地图像资源  
+		//本地图像资源
 		private int mDrawable;  
-		//图像位图  
-		private Bitmap mBitmap;  
-		//屏幕宽度  
-		private int ScreenWidth;  
-		//屏幕高度  
-		private int ScreenHeight;  
-		//原始图像矩阵  
-		private Matrix mMatrix=new Matrix();  
-		//过程图像矩阵  
-		private Matrix mSavedMatrix=new Matrix();  
-		//结果图像矩阵  
-		private Matrix mResultMatrix=new Matrix();  
+		//图像位图
+		private Bitmap mBitmap;
+		//原始图像矩阵
+		private Matrix mMatrix = new Matrix();
+		//过程图像矩阵
+		private Matrix mSavedMatrix = new Matrix();
+		//结果图像矩阵
+		private Matrix mResultMatrix = new Matrix();
 		//定义三种模式：None、Drag、Zoom  
 		public static final int Mode_None = 0;  
 		public static final int Mode_Drag = 1;  
 		public static final int Mode_Zoom = 2;  
 		//当前操作模式  
-		private int mMode=Mode_None;  
+		public int mMode = Mode_None;  
 		//当前坐标  
-		private float mDownX,mDownY;  
+		private float mDownX, mDownY;  
 		//存储两点间的距离  
-		private float mDistance=0f;  
+		private float mDistance = 0f;  
 		//存储旋转角  
 		@SuppressWarnings("unused")  
-		private float mAngle=0f;  
+		private float mAngle = 0f;  
 		//存储中点  
 		private PointF mPoint;  
 		//最大缩放比例  
@@ -60,17 +54,12 @@ public class MultiTouchView extends ImageView {
 		//最小缩放比例  
 		//private float MinScale=0.5f;  
 
-		public MultiTouchView(Activity mActivity , int Drawable) {  
+		public MultiTouchView(Activity mActivity, int Drawable) {  
 			super(mActivity);  
 			//设置当前图片资源  
 			this.mDrawable = Drawable;  
 			//获取Bitmap  
-			mBitmap = BitmapFactory.decodeResource(getResources(), mDrawable);  
-			DisplayMetrics dm = new DisplayMetrics();  
-			mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);  
-			//获取屏幕宽度和高度  
-			ScreenWidth = dm.widthPixels;  
-			ScreenHeight = dm.heightPixels;  
+			mBitmap = BitmapFactory.decodeResource(getResources(), mDrawable);
 			mMatrix = new Matrix();  
 		}  
 
@@ -96,7 +85,7 @@ public class MultiTouchView extends ImageView {
 					mDownX = Event.getX();  
 					mDownY = Event.getY();  
 					mSavedMatrix.set(mMatrix);  
-					break;  
+					break;
 					//多点触控处理  
 				case MotionEvent.ACTION_POINTER_DOWN:  
 					mMode = Mode_Zoom;  
@@ -107,7 +96,7 @@ public class MultiTouchView extends ImageView {
 					//获取中点  
 					mPoint = getMidPoint(Event);  
 					mSavedMatrix.set(mMatrix);  
-					break;  
+					break;
 				case MotionEvent.ACTION_MOVE:  
 					//缩放处理  
 					if (mMode == Mode_Zoom) {  
@@ -120,13 +109,13 @@ public class MultiTouchView extends ImageView {
 						mResultMatrix.postScale(mScale, mScale, mPoint.x, mPoint.y);  
 						//以中点为中心，进行旋转，这里可以不用  
 						//mResultMatrix.postRotate(Angle, mPoint.x, mPoint.y);  
-						mMatrix.set(mResultMatrix);  
-						invalidate();  
-					} else if (mMode == Mode_Drag) {  
+						mMatrix.set(mResultMatrix);
+						invalidate();
+					} else if (mMode == Mode_Drag) {
 						mResultMatrix.set(mSavedMatrix);  
 						//计算平移量  
-						float DeltalX=Event.getX() - mDownX;  
-						float DeltalY=Event.getY() - mDownY;  
+						float DeltalX = Event.getX() - mDownX;  
+						float DeltalY = Event.getY() - mDownY;  
 						//平移  
 						mResultMatrix.postTranslate(DeltalX, DeltalY);  
 						mMatrix.set(mResultMatrix);  
@@ -153,8 +142,7 @@ public class MultiTouchView extends ImageView {
 			return (float)Math.sqrt(DeltalX * DeltalX + DeltalY * DeltalY);
 		}  
 
-		//返回两点的中点  
-		@SuppressLint("FloatMath")  
+		//返回两点的中点
 		public PointF getMidPoint(MotionEvent Event) {  
 			float X = Event.getX(0) + Event.getX(1);  
 			float Y = Event.getY(0) + Event.getY(1);  
