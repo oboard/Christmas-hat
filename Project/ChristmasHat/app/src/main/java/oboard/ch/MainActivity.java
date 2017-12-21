@@ -5,24 +5,39 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import android.widget.ImageView;
+import android.view.MotionEvent;
 
 public class MainActivity extends Activity {
-	
+
+	FrameLayout r;
+	LinearLayout t;
 	ImageView iv;
-	
+	MultiTouchView s;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+		s = new MultiTouchView(this, R.drawable.s1);
+		s.setVisibility(View.GONE);
+		iv = (ImageView)findViewById(R.id.main_image);
+		r = (FrameLayout)iv.getParent();
+		t = (LinearLayout)findViewById(R.id.main_tool);
+		r.addView(s);
     }
 
 
@@ -32,8 +47,54 @@ public class MainActivity extends Activity {
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(intent, 1);
-		iv = (ImageView)v;
 	}
+
+	public void onClick(View v) {
+		//保存图
+		Uri u = saveBitmap(getWebDrawing(), Long.toHexString(System.currentTimeMillis()));
+
+		//分享图
+		if (v.getId() == R.id.main_share)
+			shareMsg(getTitle().toString(), "head", u);
+	}
+
+	public void shareMsg(String msgTitle, String msgText, Uri imguri) {
+		Intent intent = new Intent(Intent.ACTION_SEND); //设置分享行为
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+		intent.putExtra(Intent.EXTRA_TEXT, msgText);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(Intent.EXTRA_STREAM, imguri);
+
+		startActivity(Intent.createChooser(intent, msgTitle));
+	}
+
+	public Bitmap getWebDrawing() {
+		
+		//获得图像在ImageView的位置
+		//!!!!!!
+
+		Matrix matrix = iv.getImageMatrix();
+		Rect rect = iv.getDrawable().getBounds();
+		float[] values = new float[9];
+		matrix.getValues(values);
+		RectF mapState = new RectF();
+		mapState.left = values[2];
+		mapState.top = values[5];
+		mapState.right = mapState.left + rect.width() * values[0];
+		mapState.bottom = mapState.top + rect.height() * values[0];
+
+		r.setDrawingCacheEnabled(true);
+        r.buildDrawingCache();  //启用DrawingCache并创建位图 
+		//创建一个DrawingCache的拷贝，因为DrawingCache得到的位图在禁用后会被回收 
+		//顺便裁剪
+        Bitmap bitmap = Bitmap.createBitmap(r.getDrawingCache(), 
+											(int)mapState.left, (int)mapState.top,
+											(int)mapState.width(), (int)mapState.height()); 
+        r.setDrawingCacheEnabled(false);  //禁用DrawingCahce否则会影响性能  
+
+        return bitmap;
+    } 
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -45,6 +106,10 @@ public class MainActivity extends Activity {
 				//接收图库的图
                 try {
 					iv.setImageBitmap(BitmapFactory.decodeStream(cr.openInputStream(uri)));
+					
+					//开始编辑！（圣诞帽出来。。）
+					t.setVisibility(View.VISIBLE);
+					s.setVisibility(View.VISIBLE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -52,12 +117,12 @@ public class MainActivity extends Activity {
         }
 	}
 	/** * 将图片存到本地 */
-	private static Uri saveBitmap(Bitmap bm, String picName) {
+	private Uri saveBitmap(Bitmap bm, String picName) {
 		try {
-			String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/zdrawbook/" + picName + ".png";    
+			String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/" + picName + ".png";
 			File f = new File(dir);        
 			if (!f.exists()) {
-				f.getParentFile().mkdirs();          
+				f.getParentFile().mkdirs();
 				f.createNewFile();     
 			}
 			FileOutputStream out = new FileOutputStream(f);            
@@ -73,4 +138,5 @@ public class MainActivity extends Activity {
 		}
 		return null;
 	}
+
 }

@@ -3,19 +3,49 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:gravity="center">
+	android:gravity="center"
+	android:background="#FFFFFF">
 
-	<ImageView
-		android:layout_height="wrap_content"
-		android:layout_width="match_parent"/>
+	<FrameLayout
+		android:layout_height="match_parent"
+		android:layout_width="match_parent"
+		android:layout_marginBottom="50dp">
 
-	<ImageView
-		android:layout_height="100px"
-		android:layout_width="100px"
-		android:src="@drawable/s1"
-		android:layout_gravity="center_horizontal"
-		android:layout_marginTop="20px"
-		android:onClick="news"/>
+		<ImageView
+			android:id="@+id/main_image"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent"
+			android:onClick="news"
+			android:scaleType="fitStart"/>
+
+	</FrameLayout>
+
+	<LinearLayout
+		android:id="@+id/main_tool"
+		android:background="#EFEFEF"
+		android:layout_gravity="bottom"
+		android:layout_height="50dp"
+		android:layout_width="match_parent"
+		android:orientation="horizontal"
+		android:visibility="gone">
+
+		<Button
+			android:id="@+id/main_save"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_weight="1"
+			android:onClick="onClick"
+			android:text="保存"/>
+
+		<Button
+			android:id="@+id/main_share"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_weight="1"
+			android:onClick="onClick"
+			android:text="分享"/>
+
+	</LinearLayout>
 
 </FrameLayout>
 
