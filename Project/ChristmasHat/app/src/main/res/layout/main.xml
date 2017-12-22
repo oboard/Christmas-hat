@@ -13,12 +13,20 @@
 		android:layout_marginBottom="50dp">
 
 		<ImageView
-			android:background="#FFFFFF"
 			android:id="@+id/main_image"
 			android:layout_height="match_parent"
 			android:layout_width="match_parent"
+			android:background="#FFFFFF"
+			android:scaleType="centerInside"/>
+
+		<TextView
 			android:onClick="news"
-			android:scaleType="fitStart"/>
+			android:text="点击任意位置即可打开照片"
+			android:textColor="#333333"
+			android:gravity="center"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent"
+			android:textSize="20sp"/>
 
 	</FrameLayout>
 

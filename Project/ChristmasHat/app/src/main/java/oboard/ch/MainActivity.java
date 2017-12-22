@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-		s = new MultiTouchView(this, R.drawable.s1);
+		s = new MultiTouchView(this, R.mipmap.i);
 		s.setVisibility(View.GONE);
 		iv = (ImageView)findViewById(R.id.main_image);
 		r = (FrameLayout)findViewById(R.id.main_frame);
@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(intent, 1);
+		v.setVisibility(View.GONE);
 	}
 
 	public void onClick(View v) {
