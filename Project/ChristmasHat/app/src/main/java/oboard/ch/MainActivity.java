@@ -28,6 +28,7 @@ import android.widget.Toast;
 import android.widget.ImageButton;
 import java.util.List;
 import java.util.ArrayList;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
 	LinearLayout t;
 	ImageView iv;
 	MultiTouchView s;
+    TextView l;
 	
 	List<Integer> hats = new ArrayList<Integer>();
 	int hat = 0;
@@ -73,7 +75,7 @@ public class MainActivity extends Activity {
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(intent, 1);
-		v.setVisibility(View.GONE);
+        l = (TextView)v;
 	}
 
 	public void onX(View v) {
@@ -152,6 +154,7 @@ public class MainActivity extends Activity {
 					//开始编辑！（圣诞帽出来。。）
 					t.setVisibility(View.VISIBLE);
 					s.setVisibility(View.VISIBLE);
+                    l.setVisibility(View.GONE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

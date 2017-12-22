@@ -21,7 +21,8 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.widget.ImageView;  
+import android.widget.ImageView;
+import android.widget.Toast;  
 
 public class MultiTouchView extends ImageView {
 	//本地图像资源
@@ -57,7 +58,7 @@ public class MultiTouchView extends ImageView {
 	public MultiTouchView(Activity mActivity, int Drawable) {  
 		super(mActivity);  
 		//设置当前图片资源  
-		this.mDrawable = Drawable;  
+		this.mDrawable = Drawable;
 		//获取Bitmap  
 		mBitmap = BitmapFactory.decodeResource(getResources(), mDrawable);
 		mMatrix = new Matrix();  
@@ -72,12 +73,19 @@ public class MultiTouchView extends ImageView {
 		//绘制图像  
 		canvas.drawBitmap(mBitmap, mMatrix, null);  
 		canvas.restore();  
-	}  
+	}
+
+	@Override
+	public void setImageResource(int resId) {
+		super.setImageResource(resId);
+		mBitmap = BitmapFactory.decodeResource(getResources(), resId);
+	}
 
 	@Override  
-	public boolean onTouchEvent(MotionEvent event) {  
+	public boolean onTouchEvent(MotionEvent event) { 
+	try {
 		switch (event.getActionMasked()) {  
-				//单点触控处理  
+				//单点触控处理
 			case MotionEvent.ACTION_DOWN:  
 				//设置当前操作模式为Drag  
 				mMode = Mode_Drag;  
@@ -97,21 +105,21 @@ public class MultiTouchView extends ImageView {
 				mPoint = getMidPoint(event);  
 				mSavedMatrix.set(mMatrix);  
 				break;
-			case MotionEvent.ACTION_MOVE:  
-				//缩放处理  
-				if (mMode == Mode_Zoom) {  
+			case MotionEvent.ACTION_MOVE:
+				//缩放处理
+				if (mMode == Mode_Zoom && event.getPointerCount() >= 1) {
 					mResultMatrix.set(mSavedMatrix);  
 					//获取缩放比率  
 					float mScale = getDistance(event) / mDistance;  
-					//获取旋转角，这里可以不用  
-					float Angle = getAngle(event)-mAngle;  
-					//以中点为中心，进行缩放  
+					//获取旋转角
+					float Angle = getAngle(event) - mAngle;
+					//以中点为中心，进行缩放
 					mResultMatrix.postScale(mScale, mScale, mPoint.x, mPoint.y);  
-					//以中点为中心，进行旋转，这里可以不用  
-					mResultMatrix.postRotate(Angle, mPoint.x, mPoint.y);  
+					//以中点为中心，进行旋转，
+					mResultMatrix.postRotate(Angle * -180, mPoint.x, mPoint.y);  
 					mMatrix.set(mResultMatrix);
 					invalidate();
-				} else if (mMode == Mode_Drag) {
+				} else {
 					mResultMatrix.set(mSavedMatrix);  
 					//计算平移量  
 					float DeltalX = event.getX() - mDownX;  
@@ -128,8 +136,11 @@ public class MultiTouchView extends ImageView {
 			case MotionEvent.ACTION_POINTER_UP:  
 				//mMode = Mode_None;  
 				break;  
-		}  
-		return true;  
+		}
+		} catch (Exception e) {
+			Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		return true;
 	}  
 
 	//返回两点间的距离  
