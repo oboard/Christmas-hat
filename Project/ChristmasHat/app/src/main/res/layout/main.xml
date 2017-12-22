@@ -35,6 +35,7 @@
 		android:layout_gravity="bottom"
 		android:layout_height="50dp"
 		android:layout_width="match_parent"
+		android:layout_marginLeft="50dp"
 		android:layout_marginRight="50dp"
 		android:orientation="horizontal"
 		android:visibility="gone">
@@ -58,6 +59,15 @@
 			android:text="分享"/>
 
 	</LinearLayout>
+
+	<ImageButton
+		style="?android:attr/buttonBarButtonStyle"
+		android:layout_height="50dp"
+		android:layout_width="50dp"
+		android:onClick="onX"
+		android:layout_gravity="bottom|left"
+		android:src="@drawable/i"
+		android:scaleType="fitXY"/>
 
 	<Button
 		style="?android:attr/buttonBarButtonStyle"

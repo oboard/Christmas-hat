@@ -25,6 +25,9 @@ import android.widget.SimpleAdapter;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Toast;
+import android.widget.ImageButton;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -32,18 +35,35 @@ public class MainActivity extends Activity {
 	LinearLayout t;
 	ImageView iv;
 	MultiTouchView s;
+	
+	List<Integer> hats = new ArrayList<Integer>();
+	int hat = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-		s = new MultiTouchView(this, R.mipmap.i);
+		s = new MultiTouchView(this, R.drawable.i);
 		s.setVisibility(View.GONE);
 		iv = (ImageView)findViewById(R.id.main_image);
 		r = (FrameLayout)findViewById(R.id.main_frame);
 		t = (LinearLayout)findViewById(R.id.main_tool);
 		
 		r.addView(s);
+		
+		//添加帽子到列表
+		hats.add(R.drawable.i);
+		hats.add(R.drawable.i1);
+		hats.add(R.drawable.i2);
+		hats.add(R.drawable.i3);
+		hats.add(R.drawable.i4);
+		hats.add(R.drawable.i5);
+		hats.add(R.drawable.i6);
+		hats.add(R.drawable.i7);
+		hats.add(R.drawable.i8);
+		hats.add(R.drawable.i9);
+		hats.add(R.drawable.i10);
+		hats.add(R.drawable.i11);
     }
 
 
@@ -56,6 +76,15 @@ public class MainActivity extends Activity {
 		v.setVisibility(View.GONE);
 	}
 
+	public void onX(View v) {
+		//切换帽子
+		hat++;
+		if (hat >= 11)
+			hat = 0;
+		((ImageButton)v).setImageResource(hats.get(hat));
+		s.setImageResource(hats.get(hat));
+	}
+		
 	public void onClick(View v) {
 		//保存图
 		Uri u = saveBitmap(getWebDrawing(), Long.toHexString(System.currentTimeMillis()));

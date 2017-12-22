@@ -15,6 +15,20 @@ public final class R {
         public static final int colorPrimary=0x7f040000;
         public static final int colorPrimaryDark=0x7f040001;
     }
+    public static final class drawable {
+        public static final int i=0x7f020000;
+        public static final int i1=0x7f020001;
+        public static final int i10=0x7f020002;
+        public static final int i11=0x7f020003;
+        public static final int i2=0x7f020004;
+        public static final int i3=0x7f020005;
+        public static final int i4=0x7f020006;
+        public static final int i5=0x7f020007;
+        public static final int i6=0x7f020008;
+        public static final int i7=0x7f020009;
+        public static final int i8=0x7f02000a;
+        public static final int i9=0x7f02000b;
+    }
     public static final class id {
         public static final int main_frame=0x7f070000;
         public static final int main_image=0x7f070001;
@@ -24,9 +38,6 @@ public final class R {
     }
     public static final class layout {
         public static final int main=0x7f030000;
-    }
-    public static final class mipmap {
-        public static final int i=0x7f020000;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
