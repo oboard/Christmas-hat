@@ -16,9 +16,11 @@
 			android:id="@+id/main_image"
 			android:layout_height="match_parent"
 			android:layout_width="match_parent"
-			android:scaleType="centerInside"/>
+			android:scaleType="fitCenter"/>
 
 		<TextView
+			android:clickable="true"
+			android:focusable="true"
 			android:onClick="news"
 			android:text="点击任意位置即可打开照片"
 			android:textColor="#333333"
@@ -63,6 +65,8 @@
 		style="?android:attr/buttonBarButtonStyle"
 		android:layout_height="50dp"
 		android:layout_width="50dp"
+		android:clickable="true"
+		android:focusable="true"
 		android:onClick="onX"
 		android:layout_gravity="bottom|left"
 		android:src="@drawable/i"

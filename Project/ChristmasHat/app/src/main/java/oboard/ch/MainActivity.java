@@ -6,7 +6,10 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -14,21 +17,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import android.widget.Spinner;
-import android.widget.SimpleAdapter;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
-import android.widget.Toast;
-import android.widget.ImageButton;
-import java.util.List;
 import java.util.ArrayList;
-import android.widget.TextView;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -37,7 +36,8 @@ public class MainActivity extends Activity {
 	ImageView iv;
 	MultiTouchView s;
     TextView l;
-	
+    Bitmap sb;
+
 	List<Integer> hats = new ArrayList<Integer>();
 	int hat = 0;
 
@@ -50,9 +50,9 @@ public class MainActivity extends Activity {
 		iv = (ImageView)findViewById(R.id.main_image);
 		r = (FrameLayout)findViewById(R.id.main_frame);
 		t = (LinearLayout)findViewById(R.id.main_tool);
-		
+
 		r.addView(s);
-		
+
 		//添加帽子到列表
 		hats.add(R.drawable.i);
 		hats.add(R.drawable.i1);
@@ -81,27 +81,38 @@ public class MainActivity extends Activity {
 	public void onX(View v) {
 		//切换帽子
 		hat++;
-		if (hat >= 11)
+		if (hat > 11)
 			hat = 0;
 		((ImageButton)v).setImageResource(hats.get(hat));
 		s.setImageResource(hats.get(hat));
 	}
-		
+
 	public void onClick(View v) {
+        Bitmap bm = getWebDrawing();
 		//保存图
-		Uri u = saveBitmap(getWebDrawing(), Long.toHexString(System.currentTimeMillis()));
+		Uri u = saveBitmap(bm, Long.toHexString(System.currentTimeMillis()));
 
 		//分享图
-		if (v.getId() == R.id.main_share)
+		if (v.getId() == R.id.main_share) {
 			shareMsg(getTitle().toString(), "head", u);
-		else
-			new AlertDialog.Builder(this).setMessage("已保存到 " + u.toString()).setPositiveButton("知道了", null).show();
-	}
+		} else {
+
+            final ImageView i = new ImageView(this);
+            i.setImageBitmap(bm);
+
+            new AlertDialog.Builder(this)
+                .setView(i)
+                .setMessage("已保存到 " + u.toString())
+                .setPositiveButton("知道了", null)
+                .show();
+
+        }
+    }
 
 	public void onAbout(View v) {
 		Toast.makeText(this, "作者：一块小板子   QQ：2232442466", Toast.LENGTH_LONG).show();
 	}
-		
+
 	public void shareMsg(String msgTitle, String msgText, Uri imguri) {
 		Intent intent = new Intent(Intent.ACTION_SEND); //设置分享行为
 		intent.setType("image/*");
@@ -128,14 +139,21 @@ public class MainActivity extends Activity {
 		mapState.right = mapState.left + rect.width() * values[0];
 		mapState.bottom = mapState.top + rect.height() * values[0];
 
-		r.setDrawingCacheEnabled(true);
-        r.buildDrawingCache();  //启用DrawingCache并创建位图 
-		//创建一个DrawingCache的拷贝，因为DrawingCache得到的位图在禁用后会被回收 
-		//顺便裁剪
-        Bitmap bitmap = Bitmap.createBitmap(r.getDrawingCache(), 
-											(int)mapState.left, (int)mapState.top,
-											(int)mapState.width(), (int)mapState.height()); 
-        r.setDrawingCacheEnabled(false);  //禁用DrawingCahce否则会影响性能  
+        Bitmap bitmap = Bitmap.createBitmap((int)mapState.width(), (int)mapState.height(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        //绘制原图
+        canvas.drawBitmap(sb,
+        new Rect(0, 0, (int)sb.getWidth(), (int)sb.getHeight()),
+        new Rect(0, 0, (int)mapState.width(), (int)mapState.height()),
+        null);
+        //消除图像锯齿
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));  
+        canvas.save();
+        //绘制帽子
+        s.mMatrix.postTranslate(-mapState.left, -mapState.top);
+        canvas.drawBitmap(s.mBitmap, s.mMatrix, null);
+        s.mMatrix.setTranslate(0.0f, 0.0f);
+		canvas.restore();
 
         return bitmap;
     } 
@@ -149,7 +167,9 @@ public class MainActivity extends Activity {
                 ContentResolver cr = this.getContentResolver();
 				//接收图库的图
                 try {
-					iv.setImageBitmap(BitmapFactory.decodeStream(cr.openInputStream(uri)));
+                    //存入Bitmap然后显示到Imageview！
+                    sb = BitmapFactory.decodeStream(cr.openInputStream(uri));
+					iv.setImageBitmap(sb);
 
 					//开始编辑！（圣诞帽出来。。）
 					t.setVisibility(View.VISIBLE);

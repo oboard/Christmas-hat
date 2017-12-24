@@ -28,9 +28,9 @@ public class MultiTouchView extends ImageView {
 	//本地图像资源
 	private int mDrawable;  
 	//图像位图
-	private Bitmap mBitmap;
+	public Bitmap mBitmap;
 	//原始图像矩阵
-	private Matrix mMatrix = new Matrix();
+	public Matrix mMatrix = new Matrix();
 	//过程图像矩阵
 	private Matrix mSavedMatrix = new Matrix();
 	//结果图像矩阵
@@ -66,13 +66,13 @@ public class MultiTouchView extends ImageView {
 
 	@SuppressLint("DrawAllocation")  
 	@Override  
-	protected void onDraw(Canvas canvas) {  
+	protected void onDraw(Canvas canvas) {
 		//消除图像锯齿  
 		canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));  
-		canvas.save();  
-		//绘制图像  
+		canvas.save();
+		//绘制图像
 		canvas.drawBitmap(mBitmap, mMatrix, null);  
-		canvas.restore();  
+		canvas.restore();
 	}
 
 	@Override

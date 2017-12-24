@@ -8,8 +8,8 @@ android {
         applicationId "oboard.ch"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.1"
+        versionCode 4
+        versionName "1.1.2"
     }
 
     buildTypes {
