@@ -30,11 +30,14 @@ public final class R {
         public static final int i9=0x7f02000b;
     }
     public static final class id {
+        public static final int main_add=0x7f070007;
         public static final int main_frame=0x7f070000;
         public static final int main_image=0x7f070001;
+        public static final int main_ok=0x7f070005;
         public static final int main_save=0x7f070003;
         public static final int main_share=0x7f070004;
         public static final int main_tool=0x7f070002;
+        public static final int main_x=0x7f070006;
     }
     public static final class layout {
         public static final int main=0x7f030000;

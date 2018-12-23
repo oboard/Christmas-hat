@@ -61,6 +61,16 @@
 
 	</LinearLayout>
 
+	<Button
+		style="?android:attr/buttonBarButtonStyle"
+		android:layout_height="50dp"
+		android:layout_width="match_parent"
+		android:text="确定"
+		android:layout_gravity="bottom"
+		android:id="@+id/main_ok"
+		android:visibility="gone"
+		android:onClick="ok"/>
+
 	<ImageButton
 		style="?android:attr/buttonBarButtonStyle"
 		android:layout_height="50dp"
@@ -70,7 +80,20 @@
 		android:onClick="onX"
 		android:layout_gravity="bottom|left"
 		android:src="@drawable/i"
-		android:scaleType="fitXY"/>
+		android:scaleType="fitXY"
+		android:id="@+id/main_x"/>
+
+	<Button
+		style="?android:attr/buttonBarButtonStyle"
+		android:layout_height="50dp"
+		android:layout_width="50dp"
+		android:clickable="true"
+		android:focusable="true"
+		android:onClick="onAdd"
+		android:layout_gravity="bottom|left"
+		android:text="+"
+		android:textSize="20sp"
+		android:id="@+id/main_add"/>
 
 	<Button
 		style="?android:attr/buttonBarButtonStyle"

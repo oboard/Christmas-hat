@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
 
@@ -37,6 +38,8 @@ public class MainActivity extends Activity {
 	MultiTouchView s;
     TextView l;
     Bitmap sb;
+    Button okb, addb;
+    ImageButton xb;
 
 	List<Integer> hats = new ArrayList<Integer>();
 	int hat = 0;
@@ -50,7 +53,9 @@ public class MainActivity extends Activity {
 		iv = (ImageView)findViewById(R.id.main_image);
 		r = (FrameLayout)findViewById(R.id.main_frame);
 		t = (LinearLayout)findViewById(R.id.main_tool);
-
+        okb = (Button)findViewById(R.id.main_ok);
+        addb = (Button)findViewById(R.id.main_add);
+        xb = (ImageButton)findViewById(R.id.main_x);
 		r.addView(s);
 
 		//添加帽子到列表
@@ -77,6 +82,24 @@ public class MainActivity extends Activity {
 		startActivityForResult(intent, 1);
         l = (TextView)v;
 	}
+
+    public void ok(View v) {
+        sb = getWebDrawing();
+        iv.setImageBitmap(sb);
+        okb.setVisibility(View.GONE);
+        xb.setVisibility(View.GONE);
+        s.setVisibility(View.GONE);
+        addb.setVisibility(View.VISIBLE);
+        t.setVisibility(View.VISIBLE);
+    }
+
+	public void onAdd(View v) {
+        addb.setVisibility(View.GONE);
+        okb.setVisibility(View.VISIBLE);
+        s.setVisibility(View.VISIBLE);
+        t.setVisibility(View.GONE);
+        xb.setVisibility(View.VISIBLE);
+    }
 
 	public void onX(View v) {
 		//切换帽子
@@ -110,7 +133,7 @@ public class MainActivity extends Activity {
     }
 
 	public void onAbout(View v) {
-		Toast.makeText(this, "作者：一块小板子   QQ：2232442466", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "作者：一块小板子", Toast.LENGTH_LONG).show();
 	}
 
 	public void shareMsg(String msgTitle, String msgText, Uri imguri) {
@@ -143,9 +166,9 @@ public class MainActivity extends Activity {
         Canvas canvas = new Canvas(bitmap);
         //绘制原图
         canvas.drawBitmap(sb,
-        new Rect(0, 0, (int)sb.getWidth(), (int)sb.getHeight()),
-        new Rect(0, 0, (int)mapState.width(), (int)mapState.height()),
-        null);
+                          new Rect(0, 0, (int)sb.getWidth(), (int)sb.getHeight()),
+                          new Rect(0, 0, (int)mapState.width(), (int)mapState.height()),
+                          null);
         //消除图像锯齿
         canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));  
         canvas.save();
@@ -172,8 +195,7 @@ public class MainActivity extends Activity {
 					iv.setImageBitmap(sb);
 
 					//开始编辑！（圣诞帽出来。。）
-					t.setVisibility(View.VISIBLE);
-					s.setVisibility(View.VISIBLE);
+                    onAdd(null);
                     l.setVisibility(View.GONE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
