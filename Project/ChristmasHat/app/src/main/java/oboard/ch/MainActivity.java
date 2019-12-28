@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.Button;
+import android.content.Context;
+import android.os.Build;
 
 public class MainActivity extends Activity {
 
@@ -111,15 +113,28 @@ public class MainActivity extends Activity {
 	}
 
 	public void onClick(View v) {
-        Bitmap bm = getWebDrawing();
-		//保存图
-		Uri u = saveBitmap(bm, Long.toHexString(System.currentTimeMillis()));
-
+        Bitmap bm = sb;
 		//分享图
 		if (v.getId() == R.id.main_share) {
+			//保存图
+			
+			String n = Long.toHexString(System.currentTimeMillis()) + ".png";
+			String dir = v.getContext().getCacheDir() + n;
+			Uri u = saveBitmap(bm,dir);
+			try
+			{
+				u = Uri.parse(android.provider.MediaStore.Images.Media.insertImage(this.getContentResolver(), dir, n , null));
+			}
+			catch (FileNotFoundException e)
+			{}
+			
 			shareMsg(getTitle().toString(), "head", u);
 		} else {
 
+			//保存图
+			String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/" + Long.toHexString(System.currentTimeMillis()) + ".png";
+			Uri u = saveBitmap(bm, dir);
+			
             final ImageView i = new ImageView(this);
             i.setImageBitmap(bm);
 
@@ -131,9 +146,9 @@ public class MainActivity extends Activity {
 
         }
     }
-
+	
 	public void onAbout(View v) {
-		Toast.makeText(this, "作者：一块小板子", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "作者@一块小板子\nQQ2232442466\n祝你2019圣诞节快乐！", Toast.LENGTH_LONG).show();
 	}
 
 	public void shareMsg(String msgTitle, String msgText, Uri imguri) {
@@ -204,9 +219,9 @@ public class MainActivity extends Activity {
         }
 	}
 	/** * 将图片存到本地 */
-	private Uri saveBitmap(Bitmap bm, String picName) {
+	private Uri saveBitmap(Bitmap bm, String dir) {
 		try {
-			String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/" + picName + ".png";
+			
 			File f = new File(dir);        
 			if (!f.exists()) {
 				f.getParentFile().mkdirs();

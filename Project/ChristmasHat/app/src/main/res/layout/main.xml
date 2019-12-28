@@ -22,7 +22,7 @@
 			android:clickable="true"
 			android:focusable="true"
 			android:onClick="news"
-			android:text="点击任意位置即可打开照片"
+			android:text="➕\n点按任意位置即可打开照片"
 			android:textColor="#333333"
 			android:gravity="center"
 			android:layout_height="match_parent"
